@@ -3,11 +3,25 @@
 This file accepts a file from standard input with n lines and prints the lines to standard output
 
 '''
-
 import sys
 
-try:
+#python helloworld.py < test.txt
+def read_file():
     for line in sys.stdin:
         print(line, end="")
-except UnicodeDecodeError:
-    print("Error: file is not a text file. Please only input a file with the .txt extension", file=sys.stderr)
+
+#python helloworld.py test.txt
+def read_file_as_argument():
+    with open(sys.argv[1]) as f:
+        for line in f:
+            print(line, end="")
+
+def main():
+    if len(sys.argv) >= 2:
+            read_file_as_argument()
+    else:
+        read_file()
+    
+
+if __name__ == "__main__":
+    main()

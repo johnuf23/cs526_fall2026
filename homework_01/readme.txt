@@ -1,3 +1,6 @@
+This is a write up of how my helloworld.py program works and why each step was chosen
+
+
 This is a step by step set of instructions on how to successfully run helloworld.py from the command line and how the program 
 was implemented.
 
