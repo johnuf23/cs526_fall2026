@@ -29,9 +29,11 @@ class SinglyLinkedList:
         new_Node = Node(value)
         new_Node.next = self.head
         self.head = new_Node
-        if self.count == 0:
-            self.tail = new_Node
         self.count += 1
+
+        if self.head.next is None:
+            self.tail = new_Node
+        
 
 
     def insert(self, index, value):

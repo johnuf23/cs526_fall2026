@@ -1,0 +1,31 @@
+#every command into one text file
+add 1
+add 2
+add 10
+add 7
+add 5.5
+total
+
+print_list
+delete 2
+print_list
+total
+
+exists 1
+exists 2
+exists 5.5
+
+delete 5.5
+add 4
+add 3
+add 99
+print_list
+total
+sum_middle_three
+median
+count 4
+add 4
+count 4
+count 5
+
+print_list

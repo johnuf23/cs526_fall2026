@@ -4,15 +4,11 @@ add 4
 add 29
 add 8
 add 2
-exists 2
-exists 5
-print_list
-delete 4
-print_list
-add 4
-print_list
+add 29
+add 29
+add 29
+add 29
 delete 2
 print_list
-delete 29
-print_list
-delete 51
+count 29
+median
