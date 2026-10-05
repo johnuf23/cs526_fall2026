@@ -12,7 +12,7 @@ An advantage of using a tail pointer in a linked list is that you can easily fin
 
 \- If you want to append to the linked list, you can do so using the tail pointer instead of having to traverse every node.
 
-\- If you want to merge two linked lists back to back, you can get the tail pointer of the first one and the head of the second one and connect them. 
+\- If you want to merge two linked lists back to back, you can get the tail pointer of the first one and the head of the second one and connect them.
 
 \- If you wanted to make the linked list circular, you can just point the tail node to the head
 
@@ -30,9 +30,17 @@ Problems 2 and 4 each have standard Create Read Update and Delete methods and ea
 
 
 
+The problem2Resources folder has all the test files from Blackboard
+
+
+
+Open the OutputExample\_AllCommands.png to see an example of my output code with a custom text file that has all the methods from problem 4
+
+
+
 ## Algorithm:
 
-### Problem 2: 
+### Problem 2:
 
 * append() adds a node to the end of the list. It first checks if the head is None, in which case it will set both the head and tail of the list to that Node, and if not the it will just update the tail.
 * prepend() operates similarly to append() but will automatically set itself to the head by definition. If the head is the only node, it also sets the tail to the new Node.
@@ -71,5 +79,22 @@ Problems 2 and 4 each have standard Create Read Update and Delete methods and ea
 
 
 
+## Interesting Aspects:
 
+* For the driver for problem 2, I wanted to account for the case where the command had an unexpected number of arguments, so I created a dictionary with each command's name and how many arguments it should expect. That way I could not only check for arguments but also if the command was a valid command in the first place, after splitting the text line with parts = line.split(). The command should be the part at index 0 and the arguments should be everything after, denoted by parts\[1:]
+* My stair climbing recursive function does not necessarily account for stairs of negative numbers, but it will just return 1 in those cases. I think this theoretically works, although perhaps not useful in this universe
+* For problem 4, I had to change self.count to self.size because the assignment called for creating a count method. For the driver, I realized I had to account for floating values as input because otherwise it wouldn't work with sdll.add(int(args\[0])). So I created a new helper method for parsing the number and returning an int or a float.
+* In problem 4, I decided to reuse recursive helper methods that could do similar things for different methods. I used the exists\_helper to parse for the exists method and the delete method, since they both use the same type of parsing. I originally made the exists\_helper just return a bool always, but in order to get it to work with both methods I had it return the current node. delete could use the node to check the previous and next nodes while exists could just do if(value) for a simple "True" return.
+
+
+
+## How To Run:
+
+* Download all files in homework\_02 to a directory of your choice on your machine. Open command prompt and use the following examples:
+
+  * python3 problem2\_driver.py < problem2Resources/problem2\_basic.txt
+  * python3 problem4\_driver.py < problem2Resources/problem4\_simple.txt
+* For problem3, you can just run the file directly without a driver:
+
+  * python3 problem3.py
 
