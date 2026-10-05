@@ -90,7 +90,7 @@ Open the OutputExample\_AllCommands.png to see an example of my output code with
 
 ## How To Run:
 
-* Download all files in homework\_02 to a directory of your choice on your machine. Open command prompt and use the following examples:
+* Download all files in homework\_02 to a directory of your choice on your machine. Open command prompt, navigate to the directory that homework\_02 exists in, and use the following examples:
 
   * python3 problem2\_driver.py < problem2Resources/problem2\_basic.txt
   * python3 problem4\_driver.py < problem2Resources/problem4\_simple.txt
