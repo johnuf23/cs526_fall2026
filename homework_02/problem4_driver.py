@@ -1,3 +1,5 @@
+#added parse_number with a try except for any float numbers being added
+
 import sys
 from problem4 import SortedDoublyLinkedList
 

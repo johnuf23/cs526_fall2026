@@ -176,10 +176,6 @@ class SortedDoublyLinkedList:
             return self.count_helper(current.next, value)
 
         
-
-
-        
-
     def print_list(self):
         if self.head is None and self.tail is None:
             print("empty")
