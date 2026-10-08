@@ -18,7 +18,7 @@ def main():
     print(counter)
 
 def checkPalindrome(string):
-    #beginning and end should already not be whitespace
+    #beginning and end should already not be whitespace from .strip()
     p1 = 0
     p2 = len(string) - 1
 
@@ -30,6 +30,7 @@ def checkPalindrome(string):
         #they are equal and now find next char from front and rear
         p1 += 1
         p2 -= 1
+        #checks if char is whitespace or non-letter
         while ord(string[p1]) < 65 or ord(string[p1]) > 122:
             p1 += 1
         while ord(string[p2]) < 65 or ord(string[p2]) > 122:
