@@ -197,7 +197,7 @@ To run problem 1, download the homework\_03 folder onto your machine, navigate t
 
 To run problem 2, download the homework\_03 folder onto your machine, navigate to that directory in the command prompt, and run this command:
 
-&#x09;python3 problem2.py < tests\\unique\_substrings\_input\_0.txt
+&#x09;python3 problem2.py < tests\_p2\\unique\_substrings\_input\_0.txt
 
 
 
