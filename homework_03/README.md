@@ -181,7 +181,7 @@ At first I misread the question and thought that the lines only fired in one dir
 
 # How to Run:
 
-## Problem 1:
+### Problem 1:
 
 To run problem 1, download the homework\_03 folder onto your machine, navigate to that directory in the command prompt, and run this command:
 
@@ -201,7 +201,7 @@ To run problem 2, download the homework\_03 folder onto your machine, navigate t
 
 
 
-## Problem 3:
+### Problem 3:
 
 DIFFERENT FROM OTHER PROBLEMS:
 
@@ -213,7 +213,7 @@ To run problem 3, the homework\_02 folder must also be downloaded onto your mach
 
 
 
-## Problem 4:
+### Problem 4:
 
 To run problem 4, download the homework\_03 folder onto your machine, navigate to that directory in the command prompt, and run this command:
 
