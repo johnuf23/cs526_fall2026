@@ -1,7 +1,7 @@
 import sys
 
 def main():
-    n = int(sys.stdin.readline().strip())
+    sys.stdin.readline() #skip first line
     target = int(sys.stdin.readline().strip())
     arr = []
 
@@ -18,12 +18,11 @@ def main():
         if sum > target:
             answer = i + 1
             break
-    print("Input: ", arr, "Target: ", target, "Answer: ", answer)
+    print(*arr, sep=",", end="")
+    print(" Target:", target, "Answer:", answer)
     return
+
     
-
-
-
 if __name__ == "__main__":
     main()
 
