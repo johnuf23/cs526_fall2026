@@ -29,7 +29,7 @@ def right_angles(coordinates):
             dx = c[0] - origin[0]
             dy = c[1] - origin[1]
 
-            angle = round(math.degrees(math.atan2(dy, dx)) % 360, 5) #round to 5 decimals, normalizeed from 0 to 360 degrees
+            angle = round(math.degrees(math.atan2(dy, dx)) % 360, 5) #round to 5 decimals, normalized from 0 to 360 degrees
             if angle not in angles:
                 angles[angle] = 1
             else:
