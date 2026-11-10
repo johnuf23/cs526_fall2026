@@ -16,90 +16,120 @@ def main():
         a = list(map(int, file.readline().strip().split()))
         b = list(map(int, file.readline().strip().split()))
 
-
-    if len(a) != size_a or len(b) != size_b:
-        print("Error: Array sizes do not match the input.")
-        return
-
-    result = longest_alternating_sequence(a, b)
+    result = longest_alternating_sequence(size_a, size_b, a, b)
 
     print(f"File Input: {os.path.basename(filename)}")
     print(f"Longest Sequence: {len(result)}")
 
 
-def longest_alternating_sequence(a, b):
-    m, n = len(a), len(b)
+#BINARY INDEX TREES
+def longest_alternating_sequence(size_a, size_b, a, b):
+    m, n = size_a, size_b
     if m == 0 and n == 0:
         return []
+    
+    av, al, ai = [], [], []
+    bv, bl, bi = [], [], []
 
-    # Compress values to ranks 1..size for use as Fenwick tree indices.
-    rank = {v: r for r, v in enumerate(sorted(set(a) | set(b)), 1)}
-    size = len(rank)
-
-    # Fenwick trees (prefix maximum) over value rank.
-    # len_x[r] = best length of a valid sequence ending in an element of X
-    # whose value rank is covered by node r; id_x[r] = that sequence's end node.
-    # Node ids: A[p] -> p, B[p] -> m + p.
-    len_a = [0] * (size + 1)
-    id_a = [-1] * (size + 1)
-    len_b = [0] * (size + 1)
-    id_b = [-1] * (size + 1)
-
-    prev = [-1] * (m + n)   # predecessor node, for reconstruction
+    # predecessor node, for reconstruction
+    prev = [-1] * (m + n)
     best = 0
     best_node = -1
 
-    # Walk positions left to right. Both elements at position p are queried
-    # before either is inserted, since positions must strictly increase.
     for p in range(max(m, n)):
         fa = fb = 0
 
+        #query both arrays before any insert
         if p < m:
-            ra = rank[a[p]]
-            i = ra - 1
-            q = 0
-            qid = -1
-            while i > 0:
-                if len_b[i] > q:
-                    q = len_b[i]
-                    qid = id_b[i]
-                i &= i - 1
-            fa = q + 1
-            prev[p] = qid
+            x = a[p]
+            lo, hi = 0, len(bv)
+            # count of B-points with value < x
+            while lo < hi:                    
+                mid = (lo + hi) >> 1
+                if bv[mid] < x:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            if lo:
+                fa = bl[lo - 1] + 1
+                prev[p] = bi[lo - 1]
+            else:
+                fa = 1
             if fa > best:
                 best = fa
                 best_node = p
 
         if p < n:
-            rb = rank[b[p]]
-            i = rb - 1
-            q = 0
-            qid = -1
-            while i > 0:
-                if len_a[i] > q:
-                    q = len_a[i]
-                    qid = id_a[i]
-                i &= i - 1
-            fb = q + 1
-            prev[m + p] = qid
+            y = b[p]
+            lo, hi = 0, len(av)
+            # count of A-points with value < y
+            while lo < hi:                    
+                mid = (lo + hi) >> 1
+                if av[mid] < y:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            if lo:
+                fb = al[lo - 1] + 1
+                prev[m + p] = ai[lo - 1]
+            else:
+                fb = 1
             if fb > best:
                 best = fb
                 best_node = m + p
 
+        #inserts
         if fa:
-            i = ra
-            while i <= size:
-                if len_a[i] < fa:
-                    len_a[i] = fa
-                    id_a[i] = p
-                i += i & -i
+            # r = count of A-points with value <= x
+            lo, hi = 0, len(av)
+            while lo < hi:
+                mid = (lo + hi) >> 1
+                if av[mid] <= x:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            # Skip if an existing point is at least as small and at least as long.
+            if not (lo and al[lo - 1] >= fa):
+                # s = count of A-points with value < x
+                s, hi = 0, lo
+                while s < hi:
+                    mid = (s + hi) >> 1
+                    if av[mid] < x:
+                        s = mid + 1
+                    else:
+                        hi = mid
+                # Remove points the new one dominates (value >= x, length <= fa).
+                e = s
+                size = len(av)
+                while e < size and al[e] <= fa:
+                    e += 1
+                av[s:e] = [x]
+                al[s:e] = [fa]
+                ai[s:e] = [p]
+
         if fb:
-            i = rb
-            while i <= size:
-                if len_b[i] < fb:
-                    len_b[i] = fb
-                    id_b[i] = m + p
-                i += i & -i
+            lo, hi = 0, len(bv)
+            while lo < hi:
+                mid = (lo + hi) >> 1
+                if bv[mid] <= y:
+                    lo = mid + 1
+                else:
+                    hi = mid
+            if not (lo and bl[lo - 1] >= fb):
+                s, hi = 0, lo
+                while s < hi:
+                    mid = (s + hi) >> 1
+                    if bv[mid] < y:
+                        s = mid + 1
+                    else:
+                        hi = mid
+                e = s
+                size = len(bv)
+                while e < size and bl[e] <= fb:
+                    e += 1
+                bv[s:e] = [y]
+                bl[s:e] = [fb]
+                bi[s:e] = [m + p]
 
     # Reconstruct the sequence by following predecessor links.
     result = []
@@ -110,6 +140,7 @@ def longest_alternating_sequence(a, b):
     result.reverse()
 
     return result
+
 
 if __name__ == "__main__":
     main()
