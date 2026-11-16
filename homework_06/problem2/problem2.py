@@ -1,6 +1,8 @@
 '''
 Problem 2: Implementation of Heap
 '''
+import sys
+
 
 class Node:
     def __init__(self, value):
@@ -10,15 +12,21 @@ class Node:
         self.parent = None
 
 class Min_Heap:
-    def __init__(self):
+    def __init__(self, verbose):
         self.root = None
         self.last = 0
+        self.verbose = verbose #for print formatting
 
 
     def insert(self, value):
+        if self.verbose:
+            print(f"After insert({value}):")
         new_node = Node(value)
 
         if self.root is None:
+            if self.verbose:
+                print(value)
+                print()
             self.root = new_node
             self.last = 1
             return
@@ -36,46 +44,192 @@ class Min_Heap:
         self.last += 1
 
         self.heapify()
+        if self.verbose:
+            self.print_heap()
 
 
     def peek(self):
+        if self.last == 0:
+            raise IndexError("Heap is Empty")
+        print("root", self.root.value)
         return self.root.value        
+
+    
+    def extract_min(self):
+        if self.last == 0:
+            raise IndexError("Heap is Empty")
+
+        min_value = self.root.value
+        last_node = self.find_last()
+
+        # only one node in the heap
+        if last_node is self.root:
+            self.root = None
+            self.last = 0
+            return min_value
+
+        # move the last node's value to the root, then detach the last node
+        self.root.value = last_node.value
+        if last_node.parent.right is last_node:
+            last_node.parent.right = None
+        else:
+            last_node.parent.left = None
+        last_node.parent = None
+        self.last -= 1
+
+        # sift down from the root until the heap is valid
+        current = self.root
+        while True:
+            smallest = current
+
+            if current.left and current.left.value < smallest.value:
+                smallest = current.left
+            if current.right and current.right.value < smallest.value:
+                smallest = current.right
+
+            if smallest is current:
+                break
+
+            current.value, smallest.value = smallest.value, current.value
+            current = smallest
+
+        return min_value
+
+
+    def delete(self, value):
+        if self.last == 0:
+            print("False, value to delete not in heap")
+            return False
+
+        # find the target node (BFS, skipping subtrees whose root is
+        # already bigger than value, since everything below it is bigger too)
+        target = None
+        queue = [self.root]
+        while queue:
+            node = queue.pop(0)
+
+            if node.value == value:
+                target = node
+                break
+            if node.value > value:
+                continue
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        if target is None:
+            print("False, value to delete not in heap")
+            return False
+
+        last_node = self.find_last()
+
+        # detach the last node from the tree
+        if last_node is self.root:
+            self.root = None
+            self.last = 0
+            print("True, deleted value: ", value)
+            return True
+
+        if last_node.parent.right is last_node:
+            last_node.parent.right = None
+        else:
+            last_node.parent.left = None
+        last_node.parent = None
+        self.last -= 1
+
+        # if the target was the last node, it's already gone
+        if target is last_node:
+            print("True, deleted value: ", value)
+            return True
+
+        # put the last node's value where the target was
+        target.value = last_node.value
+
+        # sift down
+        current = target
+        while True:
+            smallest = current
+
+            if current.left and current.left.value < smallest.value:
+                smallest = current.left
+            if current.right and current.right.value < smallest.value:
+                smallest = current.right
+
+            if smallest is current:
+                break
+
+            current.value, smallest.value = smallest.value, current.value
+            current = smallest
+
+        # sift up (needed when the target was in the middle of the tree and
+        # the last node's value is smaller than the target's parent)
+        current = target
+        while current.parent and current.value < current.parent.value:
+            current.value, current.parent.value = current.parent.value, current.value
+            current = current.parent
+
+        print("True, deleted value: ", value)
+        return True
 
 
     def build(self, values):
+        if self.verbose:
+            print("Input values: ", values)
+            print()
         for value in values:
             self.insert(value)
 
 
-    def delete(self, value):
-        return True
-
-
     def heap_sort(self):
-        if self.is_empty():
+        if self.last == 0:
             print("Heap Empty")
             return
 
-        levels = len(bin(self.last)[2:])
+        # collect all values in level order
+        arr = []
         current_level = [self.root]
-
-        res = []
-
-        for i in range(levels):
-            res += current_level
-            
+        while current_level:
             next_level = []
-
             for node in current_level:
+                arr.append(node.value)
                 if node.left:
                     next_level.append(node.left)
                 if node.right:
                     next_level.append(node.right)
             current_level = next_level
 
-        res1 = sorted([node.value for node in res])
-        print(res1)
-        return res1
+        # repeatedly remove the min from the copy
+        res = []
+        n = len(arr)
+        while n > 0:
+            res.append(arr[0])
+
+            # move the last element to the front and shrink the array
+            arr[0] = arr[n - 1]
+            n -= 1
+
+            # sift down from the front
+            i = 0
+            while True:
+                left = 2 * i + 1
+                right = 2 * i + 2
+                smallest = i
+
+                if left < n and arr[left] < arr[smallest]:
+                    smallest = left
+                if right < n and arr[right] < arr[smallest]:
+                    smallest = right
+
+                if smallest == i:
+                    break
+
+                arr[i], arr[smallest] = arr[smallest], arr[i]
+                i = smallest
+
+        print(res)
+        return res
         
 
     def is_empty(self):
@@ -85,21 +239,24 @@ class Min_Heap:
 
 
     def length(self):
-        print(self.last)
+        print(self.last, " values")
         return self.last
 
 
+    '''
+    HELPER FUNCTIONS
+    '''
     def heapify(self):
-        current = self.find_last()
-
-        while current.parent and current.value <= current.parent.value:
-            #swap values
-            current.value, current.parent.value = (
-                current.parent.value,
-                current.value
-            )
-            #set current to up-swapped node
-            current = current.parent
+            current = self.find_last()
+    
+            while current.parent and current.value <= current.parent.value:
+                #swap values
+                current.value, current.parent.value = (
+                    current.parent.value,
+                    current.value
+                )
+                #set current to up-swapped node
+                current = current.parent
 
 
     def find_last(self):
@@ -118,7 +275,7 @@ class Min_Heap:
             if node is None:
                 return None
 
-        print(node.value)
+        #print(node.value)
         return node
 
 
@@ -225,22 +382,21 @@ class Min_Heap:
                 lines.append("".join(crow).rstrip())
 
         print("\n".join(lines))
+        print()
 
-    
-    
+
 
 
 def main():
-    values = [1, 10, 9, 8, 5, 3, 2, 4, 5, 5]
-    heap = Min_Heap()
+    data = sys.stdin.read()
+    cleaned = data.replace("[", " ").replace("]", " ").replace(",", " ")
+    values = [int(x) for x in cleaned.split()]
 
+    heap = Min_Heap(verbose=True)
     heap.build(values)
-    heap.print_heap()    
-    heap.is_empty()
-    heap.length()
-    heap.find_last()
-    heap.heap_sort()
 
+    heap.length()
+    heap.peek()
 
 if __name__ == "__main__":
     main()
