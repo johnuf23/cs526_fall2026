@@ -5,7 +5,7 @@ Problem 3: Running Median Using Heap
 import sys
 import os
 
-# make problem2/problem2.py importable (sibling folder)
+# make problem2/problem2.py importable
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "problem2"))
 
 from problem2 import Min_Heap
@@ -17,9 +17,8 @@ def parse_sales(data):
 
 
 def running_medians(sales):
-    # low holds the smaller half as a max-heap. Your Min_Heap is reused by
-    # storing negated values, so the smallest negative is the largest real value.
-    # high holds the larger half as a normal min-heap.
+    # low holds the smaller half as a max-heap
+    # high holds the larger half as a normal min-heap
     low = Min_Heap(verbose=False)
     high = Min_Heap(verbose=False)
     medians = []
